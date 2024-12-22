@@ -12,6 +12,7 @@ public class Slime : Enemy
     void Start()
     {
         Debug.Log("Slime start");
+        health = 200;
     }
     void Update()
     {
@@ -24,8 +25,9 @@ public class Slime : Enemy
         {
             if (Time.time - previousTime > attackSpeed)
             {
+
                 other.gameObject.GetComponent<PlayerBehavior>().health -= attackDamage;
-                Debug.Log("Player health: " + other.gameObject.GetComponent<PlayerBehavior>().health);
+                // Debug.Log("Player health: " + other.gameObject.GetComponent<PlayerBehavior>().health);
                 previousTime = Time.time;
             }
         }

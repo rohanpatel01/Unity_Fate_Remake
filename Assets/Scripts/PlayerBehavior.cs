@@ -7,18 +7,23 @@ public class PlayerBehavior : MonoBehaviour
     // public NavMeshAgent player;
     public GameObject targetDest;
     private NavMeshAgent playerNavMeshAgent;
-    public int health;
+    public int health = 100;
+    public float attackRange = 2.5f;
+    private float previousTime = 0;
+    private float attackSpeed = 0.5f;
+    private int attackDamage = 10;
+    private bool inRangeOfEnemy = false;
 
     void Start()
     {
         playerNavMeshAgent = GetComponent<NavMeshAgent>();
-        health = 100;
+        GetComponent<SphereCollider>().radius = attackRange;
     }
-    
+
     void Update()
     {
         playerMovement();
-        attackEnemy();
+        attack();
     }
 
     void LateUpdate()
@@ -41,17 +46,14 @@ public class PlayerBehavior : MonoBehaviour
                     targetDest.transform.position = hitPoint.point;
                     playerNavMeshAgent.SetDestination(hitPoint.point);
 
-                } else 
-                {
-                    playerNavMeshAgent.SetDestination(transform.position);
-                }
+                } 
                 
             }
         } 
         
         Vector3 offsetVector = Vector3.zero;
-        float XOffset = 5f;
-        float ZOffset = 5f;
+        float XOffset = 1f;
+        float ZOffset = 1f;
 
         if (Input.GetKey(KeyCode.W)) offsetVector.z += ZOffset;
         if (Input.GetKey(KeyCode.S)) offsetVector.z += -ZOffset;
@@ -65,17 +67,45 @@ public class PlayerBehavior : MonoBehaviour
         }
     }
 
-    void attackEnemy()
-    {
-        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-        RaycastHit rayInfo;
 
-        if(Physics.Raycast(ray, out rayInfo) && Input.GetMouseButtonDown(0))
+    void attack()
+    {
+        if (inRangeOfEnemy)
         {
-            if (rayInfo.collider.tag == "Enemy")
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit rayInfo;
+
+            if(Physics.Raycast(ray, out rayInfo))
             {
-                Debug.Log("Enemy");
+                if (rayInfo.collider.tag == "Enemy" && Input.GetMouseButtonDown(0))
+                {
+                    GameObject enemy = rayInfo.collider.gameObject;
+
+                    if (Time.time - previousTime > attackSpeed)
+                    {
+                        enemy.gameObject.GetComponent<Enemy>().health -= attackDamage;
+                        Debug.Log("Attack enemy: Enemy Health: " + enemy.gameObject.GetComponent<Enemy>().health);
+
+                        previousTime = Time.time;
+                    }
+                } 
             }
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            inRangeOfEnemy = true;
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            inRangeOfEnemy = false;
         }
     }
     

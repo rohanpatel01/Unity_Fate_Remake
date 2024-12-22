@@ -4,7 +4,7 @@ public abstract class Enemy : MonoBehaviour
 {
 
     public string enemyName;
-    public int health;
+    public int health = 100;
 
     // Add more enemy traits later on
     
