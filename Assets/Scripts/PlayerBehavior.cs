@@ -7,11 +7,13 @@ public class PlayerBehavior : MonoBehaviour
     // public NavMeshAgent player;
     public GameObject targetDest;
     private NavMeshAgent playerNavMeshAgent;
+    public int health;
 
 
     void Start()
     {
         playerNavMeshAgent = GetComponent<NavMeshAgent>();
+        health = 100;
     }
 
     // Update is called once per frame
@@ -60,6 +62,11 @@ public class PlayerBehavior : MonoBehaviour
                 Debug.Log("Enemy");
             }
         }
+    }
+
+    void playerIsAttacked()
+    {
+        
     }
 
     void cameraMovement()
