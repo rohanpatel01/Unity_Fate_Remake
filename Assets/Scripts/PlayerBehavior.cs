@@ -9,14 +9,12 @@ public class PlayerBehavior : MonoBehaviour
     private NavMeshAgent playerNavMeshAgent;
     public int health;
 
-
     void Start()
     {
         playerNavMeshAgent = GetComponent<NavMeshAgent>();
         health = 100;
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
         playerMovement();
@@ -25,7 +23,8 @@ public class PlayerBehavior : MonoBehaviour
 
     void LateUpdate()
     {
-        cameraMovement();
+        Vector3 camera_offset = new Vector3(0.355670035f,21.1875229f,-20.8973522f);
+        cam.transform.position = transform.position + camera_offset;
     }
 
     void playerMovement()
@@ -48,8 +47,24 @@ public class PlayerBehavior : MonoBehaviour
                 }
                 
             }
+        } 
+        
+        Vector3 offsetVector = Vector3.zero;
+        float XOffset = 5f;
+        float ZOffset = 5f;
+
+        if (Input.GetKey(KeyCode.W)) offsetVector.z += ZOffset;
+        if (Input.GetKey(KeyCode.S)) offsetVector.z += -ZOffset;
+        if (Input.GetKey(KeyCode.D)) offsetVector.x += XOffset;
+        if (Input.GetKey(KeyCode.A)) offsetVector.x += -XOffset;
+
+        if (offsetVector != Vector3.zero)
+        {
+            targetDest.transform.position = gameObject.transform.position + offsetVector;
+            playerNavMeshAgent.SetDestination(targetDest.transform.position);
         }
     }
+
     void attackEnemy()
     {
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
@@ -63,17 +78,5 @@ public class PlayerBehavior : MonoBehaviour
             }
         }
     }
-
-    void playerIsAttacked()
-    {
-        
-    }
-
-    void cameraMovement()
-    {
-        Vector3 camera_offset = new Vector3(0.355670035f,21.1875229f,-20.8973522f);
-        cam.transform.position = transform.position + camera_offset;
-    }
-    
     
 }
