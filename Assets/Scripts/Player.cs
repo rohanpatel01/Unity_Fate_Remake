@@ -1,23 +1,26 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
-public class PlayerBehavior : MonoBehaviour
+public class Player : MonoBehaviour
 {
     public Camera cam;
-    // public NavMeshAgent player;
     public GameObject targetDest;
     private NavMeshAgent playerNavMeshAgent;
-    public int health = 100;
+    public int maxHealth = 100;
+    public int health;
     public float attackRange = 2.5f;
     private float previousTime = 0;
     private float attackSpeed = 0.5f;
     private int attackDamage = 10;
     private bool inRangeOfEnemy = false;
+    public HealthBar healthBar;
 
     void Start()
     {
         playerNavMeshAgent = GetComponent<NavMeshAgent>();
         GetComponent<SphereCollider>().radius = attackRange;
+        health = maxHealth;
+        healthBar.SetMaxHealth(maxHealth);
     }
 
     void Update()
@@ -84,13 +87,17 @@ public class PlayerBehavior : MonoBehaviour
                     if (Time.time - previousTime > attackSpeed)
                     {
                         enemy.gameObject.GetComponent<Enemy>().health -= attackDamage;
-                        Debug.Log("Attack enemy: Enemy Health: " + enemy.gameObject.GetComponent<Enemy>().health);
-
                         previousTime = Time.time;
                     }
                 } 
             }
         }
+    }
+
+    public void takeDamage(int damage)
+    {
+        health -= damage;
+        healthBar.SetHealth(health);
     }
 
     void OnTriggerEnter(Collider other)
