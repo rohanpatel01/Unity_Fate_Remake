@@ -31,10 +31,26 @@ public class Inventory : MonoBehaviour
         {
             case "Weapon":
 
-                inventorySlots[nextAvailableSlotIndex].GetComponent<Image>().sprite = item.GetComponent<Image>().sprite;
-                Weapon weapon = item.GetComponent<Weapon>();
-                itemList.Add( new Weapon(weapon.itemName, weapon.itemName, weapon.attackDamage, weapon.sprite));
-                Debug.Log("Picked up weapon");
+                Debug.Log("Inventory capacity: " + inventorySlots.Count);
+                Debug.Log("nextAvailableSlotIndex: " + nextAvailableSlotIndex);
+
+                if (nextAvailableSlotIndex < inventorySlots.Count)
+                {
+                    inventorySlots[nextAvailableSlotIndex].GetComponent<Image>().sprite = item.GetComponent<Image>().sprite;
+                    nextAvailableSlotIndex++;
+                    Weapon weapon = item.GetComponent<Weapon>();
+                    itemList.Add( new Weapon(weapon.itemName, weapon.itemName, weapon.attackDamage, weapon.sprite));
+                    Debug.Log("Picked up weapon");
+                    Debug.Log("Picked up weapon");
+                    Destroy(item);
+
+
+                } else 
+                {
+                    Debug.Log("You are overburdened");
+
+                }
+
                 break;
 
             case "Consumable":
