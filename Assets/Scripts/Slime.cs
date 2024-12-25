@@ -11,7 +11,7 @@ public class Slime : Enemy
     
     void Start()
     {
-        health = 200;
+        setHealth(200);
     }
     void Update()
     {

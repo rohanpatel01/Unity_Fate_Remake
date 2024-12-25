@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 public class Player : MonoBehaviour
@@ -13,7 +15,12 @@ public class Player : MonoBehaviour
     private float attackSpeed = 0.5f;
     private int attackDamage = 10;
     private bool inRangeOfEnemy = false;
+    private bool inRangeOfItem = false;
+    
+    // public Hotbar hotbarScript;
+
     public HealthBar healthBar;
+    public Inventory inventoryPage;
 
     void Start()
     {
@@ -27,6 +34,7 @@ public class Player : MonoBehaviour
     {
         playerMovement();
         attack();
+        pickUpItem();
     }
 
     void LateUpdate()
@@ -86,10 +94,30 @@ public class Player : MonoBehaviour
 
                     if (Time.time - previousTime > attackSpeed)
                     {
-                        enemy.gameObject.GetComponent<Enemy>().health -= attackDamage;
+                        enemy.gameObject.GetComponent<Enemy>().takeDamage(attackDamage);
                         previousTime = Time.time;
                     }
                 } 
+            }
+        }
+    }
+
+    void pickUpItem()
+    {
+        
+        if (inRangeOfItem && Input.GetMouseButtonDown(0)) 
+        {
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hitPoint;
+
+            if(Physics.Raycast(ray, out hitPoint))
+            {
+                if (hitPoint.collider.tag == "Item")
+                {
+                    inventoryPage.placeItemInInventory(hitPoint.collider.transform.gameObject);
+                    Destroy(hitPoint.collider.transform.gameObject);
+                } 
+                
             }
         }
     }
@@ -105,6 +133,12 @@ public class Player : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
             inRangeOfEnemy = true;
+
+        }
+        
+        if (other.CompareTag("Item"))
+        {
+            inRangeOfItem = true;
         }
     }
 
@@ -113,6 +147,11 @@ public class Player : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
             inRangeOfEnemy = false;
+        }
+
+        if (other.CompareTag("Item"))
+        {
+            inRangeOfItem = false;
         }
     }
     

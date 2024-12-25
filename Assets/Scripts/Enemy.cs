@@ -4,16 +4,21 @@ public abstract class Enemy : MonoBehaviour
 {
 
     public string enemyName;
-    public int health = 100;
+    private int health = 100;
 
     // Add more enemy traits later on
     
     // public abstract void attack();
 
-    // public virtual void takeDamage(int damage)
-    // {
-    //     health -= damage;
-    //     Debug.Log("Health: " + health);
-    // }
+    public void setHealth(int health)
+    {
+        this.health = health; 
+    }
+
+    public void takeDamage(int damage)
+    {
+        health -= damage;
+        Debug.Log("Health: " + health);
+    }
 
 }
