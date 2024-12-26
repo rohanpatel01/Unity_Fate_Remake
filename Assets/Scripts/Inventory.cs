@@ -5,13 +5,17 @@ using Unity.VisualScripting;
 public class Inventory : MonoBehaviour
 {
     public List<GameObject> inventorySlots = new List<GameObject>();
-    private List<Item> itemList = new List<Item>();
+
+    public Dictionary<string, Dictionary<int, GameObject>> itemList = new Dictionary<string, Dictionary<int, GameObject>>();
 
     public List<int> isAvailable = new List<int>();
     public int nextAvailableSlotIndex;
 
     void Start()
     {
+        itemList.Add("Weapon", new Dictionary<int, GameObject>());
+        itemList.Add("Consumable", new Dictionary<int, GameObject>());
+
         nextAvailableSlotIndex = 0;
 
         foreach (Transform child in transform)
@@ -27,42 +31,32 @@ public class Inventory : MonoBehaviour
 
     public void placeItemInInventory(GameObject item)
     {
-        switch(item.GetComponent<Item>().itemType)
+        if (nextAvailableSlotIndex < inventorySlots.Count)
         {
-            case "Weapon":
+            // Change sprite of inventory slot
+            inventorySlots[nextAvailableSlotIndex].GetComponent<Image>().sprite = item.GetComponent<Image>().sprite;
+            nextAvailableSlotIndex++;
 
-                Debug.Log("Inventory capacity: " + inventorySlots.Count);
-                Debug.Log("nextAvailableSlotIndex: " + nextAvailableSlotIndex);
+            switch(item.GetComponent<Item>().itemType)
+            {
+                case "Weapon":
+                    itemList["Weapon"].Add(item.GetComponent<Weapon>().itemID, item);
+                    break;
 
-                if (nextAvailableSlotIndex < inventorySlots.Count)
-                {
-                    inventorySlots[nextAvailableSlotIndex].GetComponent<Image>().sprite = item.GetComponent<Image>().sprite;
-                    nextAvailableSlotIndex++;
-                    Weapon weapon = item.GetComponent<Weapon>();
-                    itemList.Add( new Weapon(weapon.itemName, weapon.itemName, weapon.attackDamage, weapon.sprite));
-                    Debug.Log("Picked up weapon");
-                    Debug.Log("Picked up weapon");
-                    Destroy(item);
+                case "Consumable":
+                    itemList["Consumable"].Add(item.GetComponent<Weapon>().itemID, item);
+                    break;
+                
+            }
 
+            Destroy(item);
 
-                } else 
-                {
-                    Debug.Log("You are overburdened");
-
-                }
-
-                break;
-
-            case "Consumable":
-                Debug.Log("Consumable");
-                break;
-
-
+        } 
+        else 
+        {
+            Debug.Log("You are overburdened");
         }
-
-
-
-        Debug.Log("Item name: " + item.GetComponent<Item>().getItemName());
+        
     }
 
 }

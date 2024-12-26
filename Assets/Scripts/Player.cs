@@ -115,8 +115,7 @@ public class Player : MonoBehaviour
                 if (hitPoint.collider.tag == "Item")
                 {
                     inventoryPage.placeItemInInventory(hitPoint.collider.transform.gameObject);
-                } 
-                
+                }
             }
         }
     }

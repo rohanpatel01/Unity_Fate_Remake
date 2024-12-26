@@ -7,12 +7,14 @@ public abstract class Item : MonoBehaviour
     public string itemName;
     public Sprite sprite;
     public string itemType;
+    public int itemID;
 
-    public Item (string itemName, string itemType, Sprite sprite)
+    public Item (string itemName, string itemType, Sprite sprite, int itemID)
     {
         this.itemName = itemName;
         this.itemType = itemType;
         this.sprite = sprite;
+        this.itemID = itemID;
     }
 
     public string getItemName()
